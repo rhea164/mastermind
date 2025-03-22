@@ -288,6 +288,7 @@ void blinkN(uint32_t *gpio, int led, int c) {
 /* initialise the secret sequence; by default it should be a random sequence */
 void initSeq() {
   /* ***  COMPLETE the code here  ***  */
+  srand(time(NULL));
   theSeq = (int*) malloc(sizeof(int)*seqlen);
   if(theSeq==NULL){
     fprintf(stderr, "Failed to allocate memory");
@@ -385,9 +386,8 @@ void showMatches(int /*or int*/  code, /* only for debugging */ int *seq1, int *
 int result = countMatches(seq1,seq2);
 exactMatches = result / 10;  // Extract the 10s place
 approxMatches = result % 10; // Extract the 1s place
-printf("result is : %d\n",result);
-printf("Exact matches: %d\n", exactMatches);
-printf("Approximate matches: %d\n: ", approxMatches);
+printf("%d exact\n", exactMatches);
+printf("%d approximate\n", approxMatches);
 
 }
 
@@ -1190,6 +1190,7 @@ while (!found && attempts < MAX_ATTEMPTS) { // while the sequence is not found
   if (found) {
     lcdClear(lcd);
     lcdPuts(lcd, "SUCCESS in ");
+    lcdPosition(lcd, 0, 1); 
     snprintf(buf, sizeof(buf), "%d attempts", attempts);
     lcdPuts(lcd, buf);
     writeLED(gpio, LED2, HIGH);
