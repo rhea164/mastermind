@@ -85,7 +85,7 @@
 // in mili-seconds: 0.2s
 #define DELAY   200
 // in micro-seconds: 3s
-#define TIMEOUT 3000000
+#define TIMEOUT 4000000
 // =======================================================
 // APP constants   ---------------------------------
 // number of colours and length of the sequence
@@ -385,9 +385,9 @@ void showMatches(int /*or int*/  code, /* only for debugging */ int *seq1, int *
 int result = countMatches(seq1,seq2);
 exactMatches = result / 10;  // Extract the 10s place
 approxMatches = result % 10; // Extract the 1s place
-printf("result is : %d",result);
-printf("Exact matches: %d", exactMatches);
-printf("Approximate matches: %d: ", approxMatches);
+printf("result is : %d\n",result);
+printf("Exact matches: %d\n", exactMatches);
+printf("Approximate matches: %d\n: ", approxMatches);
 
 }
 
@@ -1138,7 +1138,8 @@ while (!found && attempts < MAX_ATTEMPTS) { // while the sequence is not found
                 printf("Button pressed during guess input\n");
                 count++;
                 blinkN(gpio, LED2, 1);
-                delay(500); // Debounce delay
+                delay(150); // Debounce delay . during this delay, the state of the button goes back to 0 because its not pressed so that
+                //the next button press can be registered as a separate one.
             }
         }
         printf("Guessed number: %d\n", count);
@@ -1181,6 +1182,11 @@ while (!found && attempts < MAX_ATTEMPTS) { // while the sequence is not found
     blinkN(gpio, LED, 3);
   } else {
     fprintf(stdout, "Sequence not found\n");
+    printf("Secret Sequence: ");
+      for (int i=0; i<seqlen; i++){
+        printf("%d", theSeq[i]);
+      }
+    printf("\n");
   }
   
   free(attSeq);
