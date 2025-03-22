@@ -85,7 +85,7 @@
 // in mili-seconds: 0.2s
 #define DELAY   200
 // in micro-seconds: 3s
-#define TIMEOUT 3000000
+#define TIMEOUT 4000000
 // =======================================================
 // APP constants   ---------------------------------
 // number of colours and length of the sequence
@@ -385,9 +385,9 @@ void showMatches(int /*or int*/  code, /* only for debugging */ int *seq1, int *
 int result = countMatches(seq1,seq2);
 exactMatches = result / 10;  // Extract the 10s place
 approxMatches = result % 10; // Extract the 1s place
-printf("result is : %d",result);
-printf("Exact matches: %d", exactMatches);
-printf("Approximate matches: %d: ", approxMatches);
+printf("result is : %d\n",result);
+printf("Exact matches: %d\n", exactMatches);
+printf("Approximate matches: %d\n: ", approxMatches);
 
 }
 
@@ -1135,12 +1135,27 @@ while (!found && attempts < MAX_ATTEMPTS) { // while the sequence is not found
         uint64_t start_time = timeInMicroseconds();
         while (timeInMicroseconds() - start_time < TIMEOUT) {
             if (readButton(gpio, pinButton)) {
-                printf("Button pressed during guess input\n");
-                count++;
-                blinkN(gpio, LED2, 1);
-                delay(500); // Debounce delay
-            }
+              printf("Button pressed during guess input\n");
+              count++;
+              blinkN(gpio, LED2, 1);
+              delay(150); // Debounce delay . during this delay, the state of the button goes back to 0 because its not pressed so that
+              //the next button press can be registered as a separate one.
+          }
         }
+        if(count == 0){ //if the button is not pressed then the 
+          // count = 1;
+          for (int i=0; i<seqlen; i++){ //clearing the guess sequence so that it does not retain the previous value.
+            attSeq[i]=0; 
+          }
+          fprintf(stderr,"Please enter a valid number!");
+          i=4; //if the user has not entered a value then it should move on to the next attempt (by exiting out of the for loop 
+               // for that particular sequence attempt).
+          continue;
+        } 
+        if(count > seqlen){
+          count=3;
+        } 
+
         printf("Guessed number: %d\n", count);
         attSeq[i] = count;
         blinkN(gpio, LED, count);
@@ -1180,9 +1195,13 @@ while (!found && attempts < MAX_ATTEMPTS) { // while the sequence is not found
     writeLED(gpio, LED2, HIGH);
     blinkN(gpio, LED, 3);
   } else {
-    fprintf(stdout, "Sequence not found\n");
+    printf("Secret Sequence: \n");
+      for (int i=0; i<seqlen; i++){
+        printf("%d", theSeq[i]);
+      }
+    printf("\n");
+    
   }
-  
   free(attSeq);
   free(theSeq);
   free(lcd);
