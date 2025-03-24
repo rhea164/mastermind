@@ -1195,6 +1195,7 @@ while (!found && attempts < MAX_ATTEMPTS) { // while the sequence is not found
     lcdPuts(lcd, buf);
     writeLED(gpio, LED2, HIGH);
     blinkN(gpio, LED, 3);
+    writeLED(gpio, LED2, LOW);
   } else {
     printf("Secret Sequence: \n");
       for (int i=0; i<seqlen; i++){
