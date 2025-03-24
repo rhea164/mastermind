@@ -221,6 +221,7 @@ int failure (int fatal, const char *message, ...);
 void waitForEnter (void);
 void waitForButton (uint32_t *gpio, int button);
 
+
 /* ======================================================= */
 /* SECTION: hardware interface (LED, button, LCD display)  */
 /* ------------------------------------------------------- */
@@ -388,6 +389,7 @@ exactMatches = result / 10;  // Extract the 10s place
 approxMatches = result % 10; // Extract the 1s place
 printf("%d exact\n", exactMatches);
 printf("%d approximate\n", approxMatches);
+
 
 }
 
@@ -1175,8 +1177,28 @@ while (!found && attempts < MAX_ATTEMPTS) { // while the sequence is not found
       printf("\n");
     }
   
+    blinkN(gpio, LED2, 2); //red led blinks twice to indicate end of input
+
+    delay(1000); //delay between end of input and showing the exact and approx matches
+
     int result = countMatches(theSeq, attSeq);
     showMatches(result,theSeq, attSeq);
+
+    lcdClear(lcd);
+    snprintf(buf, sizeof(buf), "%d exact", exactMatches);
+    lcdPuts(lcd, buf);
+    lcdPosition(lcd, 0, 1); 
+    snprintf(buf, sizeof(buf), "%d approx", approxMatches);
+    lcdPuts(lcd, buf);
+    blinkN(gpio,LED,exactMatches);
+    blinkN(gpio,LED2,1);
+    blinkN(gpio,LED,approxMatches);
+
+    delay(1000); //delay between showing exact and approx matches and the start of the next round
+
+    blinkN(gpio,LED2,3); //blink red led three times to indicate next round begins
+
+
     exactMatches=0;
     approxMatches=0;
   
@@ -1184,7 +1206,6 @@ while (!found && attempts < MAX_ATTEMPTS) { // while the sequence is not found
         found = 1;
     }
   
-    blinkN(gpio, LED2, 2);
   }
   
   if (found) {
