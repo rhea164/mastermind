@@ -19,10 +19,10 @@
 @ otw there will be a clash with the main function in the C code
 .global         main2
 main2: 
-    LDR  R2, =secret	@ pointer to secret sequence
-    LDR  R3, =guess		@ pointer to guess sequence
-    MOV R0, R2			@ Pass secret to matches function as a function paramter (needs to be in R0)
-    MOV R1, R3			@ Pass guess to matches function
+    @LDR  R2, =secret	@ pointer to secret sequence
+    @LDR  R3, =guess		@ pointer to guess sequence
+    @MOV R0, R2			@ Pass secret to matches function as a function paramter (needs to be in R0)
+    @MOV R1, R3			@ Pass guess to matches function
     LDR R10, =NAN1
     LDR R11, =NAN2
     BL matches			@ Call matches function
